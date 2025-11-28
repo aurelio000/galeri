@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Galeri Foto</title>
+    <style>
+      body {
+      background-color: #181818;
+      color: #d0d0d0;
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    h1, h2 {
+      color: #f0f0f0;
+    }
+    form {
+      background-color: #222222;
+      padding: 15px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+    }
+      header {
+        background-color:rgb(0, 33, 179);
+        color: white;
+        padding: 1rem;
+        text-align: center;
+      }
+      .container {
+        padding: 2rem;
+        margin: auto;
+      }
+      .card {
+        background-color: white;
+        border: 2px solid #ffcccc;
+        border-radius: 10px;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 0 10px rgba(204, 0, 0, 0.1);
+      }
+      .card img {
+        max-width: 100%;
+        max-height: 300px;
+        height: auto;
+        object-fit: cover;
+        border-radius: 5px;
+      }
+      input,
+      textarea {
+        display: block;
+        width: 100%;
+        margin-bottom: 1rem;
+        padding: 0.5rem;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+      button {
+        background-color: rgb(0, 33, 179);
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-right: 5px;
+      }
+      button:hover {
+        background-color: #cc0000;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Galeri Foto</h1>
+    </header>
+    <div class="container">
+      <!-- Upload Baru -->
+      <form action="/upload" method="POST" enctype="multipart/form-data">
+        <h2>Upload Foto Baru</h2>
+        <input type="text" name="judul" placeholder="Judul" required />
+        <textarea name="deskripsi" placeholder="Deskripsi" required></textarea>
+        <input type="file" name="file" accept=".jpg,.jpeg,.png" required />
+        <button type="submit">Upload</button>
+      </form>
+
+      <!-- List Foto -->
+      <h2>Daftar Foto</h2>
+      {{range .photos}}
+      <div class="card">
+        <h3>{{.Judul}}</h3>
+        <img src="{{.FilePath}}" alt="{{.Judul}}" />
+        <p><strong>Deskripsi:</strong> {{.Deskripsi}}</p>
+        <p><small>Diunggah pada: {{.UploadDate}}</small></p>
+
+        <!-- Form Edit -->
+        <form
+          action="/photos/{{.ID}}"
+          method="POST"
+          enctype="multipart/form-data"
+        >
+          <input type="text" name="judul" value="{{.Judul}}" required />
+          <textarea name="deskripsi" required>{{.Deskripsi}}</textarea>
+          <input type="file" name="file" accept=".jpg,.jpeg,.png" />
+          <button type="submit">Update</button>
+        </form>
+
+        <!-- Form Hapus -->
+        <form
+          action="/photos/delete/{{.ID}}"
+          method="POST"
+          onsubmit="return confirm('Hapus foto ini?')"
+        >
+          <button type="submit" style="background-color: rgb(0, 33, 179)">Hapus</button>
+        </form>
+      </div>
+      {{else}}
+      <p>Tidak ada foto tersedia.</p>
+      {{end}}
+    </div>
+  </body>
+</html>
